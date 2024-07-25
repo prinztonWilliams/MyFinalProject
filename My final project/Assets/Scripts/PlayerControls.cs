@@ -4,26 +4,32 @@ using UnityEngine;
 
 
 
-    public class PlayerControls : MonoBehaviour
+    public class PlayerControls : MonoBehaviour 
+    
 {
+
+    public Vector3 jump;
+    
+    public bool isGrounded;
+
 
     [Header("Movement")]
     public float moveSpeed;
 
     public float groundDrag;
 
-    public float jumpForce;
+    public float jumpForce = 2.0f;
     public float jumpCooldown;
     public float airMultipier;
     bool readyToJump;
 
-
+    
 
     [Header("Ground Check ")]
 
     // How to make a C# ----> Accesor datatype varName
 
-    Rigidbody rb;
+
 
     public CharacterController controller; // A var to hold the players char controller component
 
@@ -32,6 +38,7 @@ using UnityEngine;
 
     private Vector3 moveDirections = Vector3.zero;
 
+    Rigidbody rb;
 
     public int health;
 
@@ -49,6 +56,10 @@ using UnityEngine;
 void Start()
 {
 
+jump = new Vector3(0.0f, 2.0f, 0.0f);
+
+rb = GetComponent<Rigidbody>();
+
 controller = GetComponent<CharacterController>();
 
 enemy = FindObjectOfType<EnemyFollow>();
@@ -56,6 +67,10 @@ enemy = FindObjectOfType<EnemyFollow>();
 animController = GetComponent<Animator>();
 }
 
+void OnCollisionStay()
+{
+    isGrounded = true;
+}
 
 // Update is called once per frame
 void Update()
@@ -64,6 +79,11 @@ void Update()
 float horizontalInput = Input.GetAxis("Horizontal");
 float verticalInput = Input.GetAxis("Vertical");
 
+ if(Input.GetButtonDown("Jump") && isGrounded)
+{
+    rb.AddForce(new Vector3(0, 5, 0), ForceMode.Impulse);
+    isGrounded = false;
+}
 
 // calculate direction the player should based on our collected input
 Vector3 movement = new Vector3(horizontalInput, 0, verticalInput);
@@ -90,9 +110,16 @@ else
     animController.SetBool("IsMoving", false);
 }
 }
+private void OnCollisionEnter (Collision collision)
+{
+    if(collision.gameObject.tag == "Ground")
+    {
+        isGrounded = false;
+    }
+}
 
 
-void OnTriggerEnter(Collider other)
+void OnTriggerEnter(Collider other) 
 {
 if(other.CompareTag("Enemy"))
 {
@@ -109,6 +136,6 @@ private void Jump()
     // reset y velocity
     rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 }
+
+
 }
-
-

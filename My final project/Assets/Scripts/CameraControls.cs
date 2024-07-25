@@ -1,34 +1,29 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class CameraControls : MonoBehaviour
 {
-    // The object the camera will follow
-
-    public GameObject target; // ASSIGN IN EDITOR
-
-    // The offset distance between the camera and the target
-    
-    public Vector3 pos0ffset; // ASSIGN IN EDITOR
-
-    // Start is called before the first frame update
-    void Start()
+    public float sensX;
+    public float sensY;
+    public Transform orientation;
+    public Transform camHolder;
+    float xRotation;
+    float yRotation;
+    private void Start()
     {
-       // Calcuate the distance between the target and the camera
-       // pos0ffset = transform.position - target.transform.position;
-       transform.position = target.transform.position + pos0ffset;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
-
-    // Update is called once per frame
-    void LateUpdate()
+    private void Update()
     {
-        if(target != null)
-        {
-            transform.position = target.transform.position + pos0ffset;
-        }
-
-        // Move the camera to follow the target using the offset
-
+        //get mouse input
+        float mouseX = Input.GetAxisRaw("Mouse X") * Time.deltaTime * sensX;
+        float mouseY = Input.GetAxisRaw("Mouse Y") * Time.deltaTime * sensY;
+        yRotation += mouseX;
+        xRotation -= mouseY;
+        xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+        // rotate cam and orientation
+        camHolder.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 }
