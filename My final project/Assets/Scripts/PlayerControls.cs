@@ -4,6 +4,7 @@ using UnityEngine;
 
 
 
+
     public class PlayerControls : MonoBehaviour 
     
 {
@@ -127,6 +128,7 @@ if(other.CompareTag("Enemy"))
 //GameManager.Instance.GameOver();
 
 
+
 Destroy(gameObject);
 }
 
@@ -136,6 +138,5 @@ private void Jump()
     // reset y velocity
     rb.velocity = new Vector3(rb.velocity.x, 0f, rb.velocity.z);
 }
-
 
 }
